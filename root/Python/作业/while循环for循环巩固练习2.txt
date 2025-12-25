@@ -1,0 +1,347 @@
+练习题1
+基础 break 应用（for 循环）
+用for循环遍历 1~10 的整数，打印每个数，当遇到数字 6 时，立即终止循环。
+
+练习题2 基础
+continue 应用（for 循环）
+用for循环遍历 1~15 的整数，打印每个数，但跳过能被 5 整除的数（即不打印 5、10、15）。
+
+练习题3
+break 与累加（for 循环）
+用for循环遍历 1~30 的整数，计算累加和，当累加和超过 100 时，立即终止循环，最后打印累加和。
+
+练习题4
+continue 与计数（for 循环）
+用for循环遍历 1~20 的整数，统计其中不能被 3 整除的数的个数，最后打印个数（提示：遇到能被 3 整除的数用continue跳过计数）。
+
+练习题5
+while 循环与 break
+用while循环从 1 开始累加，每次加 1，当累加和大于 50 时，终止循环，打印最终的和与最后一个加入的数。
+
+练习题6
+while 循环与 continue
+用while循环打印 1~20 的整数，遇到奇数时跳过（不打印），只打印偶数（提示：用continue跳过奇数）。
+
+练习题7
+for 循环嵌套 break
+外层for循环遍历 1~3，内层for循环遍历 1~4，打印i*j的结果，当i*j大于 5 时，终止内层循环（不影响外层循环）。
+
+练习题8
+for 循环嵌套 continue
+外层for循环遍历 1~4，内层for循环遍历 1~3，打印i+j的结果，当j为 2 时，跳过当前内层循环（即不打印i+2）。
+
+练习题9
+字符串遍历与 break
+用for循环遍历字符串"HelloWorld123"，打印每个字符，当遇到数字时，立即终止循环（数字及之后的字符都不打印）。
+
+练习题10
+字符串遍历与 continue
+用for循环遍历字符串"Python@2023"，打印所有字母（a-z、A-Z），遇到非字母字符时跳过（用continue）。
+
+练习题11
+while 循环多条件 break
+用while循环让用户反复输入整数，计算输入的所有正数的和，当输入0或负数时，终止循环，打印正数的和。
+
+练习题12
+for 循环 break 与条件判断
+用for循环遍历 1~50 的整数，找出第一个能同时被 4 和 6 整除的数，找到后立即终止循环并打印该数（若未找到则打印 “无”）。
+
+练习题13
+while 循环 continue 与计数
+用while循环实现：从 1 开始数，数到 30 为止，每数一个数判断是否为质数（仅能被 1 和自身整除），若不是质数则跳过（continue），若是质数则打印并计数，最后打印质数的总个数。
+
+练习题14
+for 循环嵌套 break+continue
+外层for循环遍历 1~5，内层for循环遍历 1~5：
+若i为 3，跳过当前外层循环（continue）；
+若j为 4，终止内层循环（break）；
+其他情况打印i,j。
+
+练习题15
+用户输入与 while+break
+用while循环实现简易密码验证：让用户最多输入 3 次密码，若输入 “123456” 则打印 “验证通过” 并终止循环；若 3 次都错误，打印 “验证失败”。
+
+练习题16
+while 循环嵌套 break
+用while循环模拟 “找数字”：外层循环控制行数（1~4），内层循环控制列数（1~4），计算行号+列号，当找到行号+列号=5时，立即终止所有循环，并打印 “找到：行 x 列 y”（x、y 为对应的行号和列号）。
+
+练习题17
+for 循环复杂条件 break
+用for循环遍历 10~100 的整数，找出第一个满足以下条件的数并打印，找到后终止循环：
+该数是偶数；
+十位数字大于个位数字；
+能被 7 整除。
+
+练习题18
+while+for 组合与 continue
+用while循环让用户输入一个字符串（最多输入 3 次），对每个输入的字符串用for循环判断：
+若字符串中包含数字，则跳过该字符串（不处理，continue外层循环）；
+否则打印字符串的长度；
+当用户输入 “exit” 时，立即终止所有循环。
+
+练习题19
+综合应用：猜数字升级版程序随机生成 1~20 的整数作为答案，用while循环让用户猜测：
+每次猜测后提示 “太大了”“太小了”；
+若用户输入非整数，提示 “请输入数字” 并跳过当前轮次（continue）；
+猜对则打印 “恭喜猜对！” 并终止循环；
+若累计猜测次数达到 5 次仍未猜对，打印 “次数用完，答案是 x”（x 为答案）并终止循环。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+答案及解析
+题 1 答案：
+for num in range(1, 11):
+    if num == 6:
+        break
+    print(num, end=" ")  # 输出：1 2 3 4 5
+解析：break在遇到 6 时终止循环，后续数字不打印。
+
+题 2 答案：
+for num in range(1, 16):
+    if num % 5 == 0:
+        continue
+    print(num, end=" ")  # 输出：1 2 3 4 6 7 8 9 11 12 13 14
+解析：continue跳过能被 5 整除的数，直接进入下一轮循环。
+
+题 3 答案：
+total = 0
+for num in range(1, 31):
+    total += num
+    if total > 100:
+        break
+print(total)  # 输出：105（1+2+...+14=105）
+解析：累加至和超过 100 时，break终止循环。
+
+题 4 答案：
+count = 0
+for num in range(1, 21):
+    if num % 3 == 0:
+        continue
+    count += 1
+print(count)  # 输出：14（20个数中14个不能被3整除）
+解析：continue跳过能被 3 整除的数，不计数。
+
+题 5 答案：
+total = 0
+num = 1
+while True:
+    total += num
+    if total > 50:
+        break
+    num += 1
+print(f"和：{total}，最后一个数：{num}")  # 输出：和：55，最后一个数：10（1+2+...+10=55）
+解析：while True无限循环，通过break在和超过 50 时终止。
+
+题 6 答案：
+num = 1
+while num <= 20:
+    if num % 2 != 0:  # 奇数判断
+        num += 1
+        continue
+    print(num, end=" ")
+    num += 1  # 输出：2 4 6 ... 20
+解析：遇到奇数时，continue跳过打印，直接进入下一轮。
+
+
+题 7 答案：
+for i in range(1, 4):
+    for j in range(1, 5):
+        product = i * j
+        print(product, end=" ")
+        if product > 5:
+            break  # 终止内层循环
+    print()  # 换行
+输出：
+1 2 3 4 
+2 4 6 
+3 6 
+解析：内层循环在乘积 > 5 时终止，外层循环继续。
+
+题 8 答案：
+for i in range(1, 5):
+    for j in range(1, 4):
+        if j == 2:
+            continue  # 跳过j=2的情况
+        print(i + j, end=" ")
+    print()
+输出：
+2 4 
+3 5 
+4 6 
+5 7 
+解析：内层循环中j=2时continue，不打印i+2。
+
+题 9 答案：
+s = "HelloWorld123"
+for char in s:
+    if char.isdigit():
+        break
+    print(char, end="")  # 输出：HelloWorld
+解析：isdigit()判断是否为数字，遇到数字时break终止。
+
+题 10 答案：
+s = "Python@2023"
+for char in s:
+    if not char.isalpha():
+        continue  # 非字母则跳过
+    print(char, end="")  # 输出：Python
+解析：isalpha()判断是否为字母，非字母时continue。
+
+题 11 答案：
+total = 0
+while True:
+    num = int(input("请输入整数（0或负数终止）："))
+    if num <= 0:
+        break
+    total += num
+print(f"正数的和：{total}")
+解析：输入非正数时break，仅累加正数。
+
+题 12 答案：
+result = "无"
+for num in range(1, 51):
+    if num % 4 == 0 and num % 6 == 0:
+        result = num
+        break
+print(result)  # 输出：12（第一个同时被4和6整除的数）
+解析：找到目标数后break，避免后续无效循环。
+
+题 13 答案：
+count = 0
+num = 1
+while num <= 30:
+    is_prime = True
+    if num < 2:
+        is_prime = False
+    for i in range(2, num):
+        if num % i == 0:
+            is_prime = False
+            break
+    if not is_prime:
+        num += 1
+        continue  # 非质数则跳过
+    print(num, end=" ")
+    count += 1
+    num += 1
+print(f"\n质数个数：{count}")  # 输出：10个质数（2,3,5,7,11,13,17,19,23,29）
+解析：非质数用continue跳过打印和计数，仅处理质数。
+
+题 14 答案：
+for i in range(1, 6):
+    if i == 3:
+        continue  # 跳过i=3的外层循环
+    for j in range(1, 6):
+        if j == 4:
+            break  # 终止内层循环
+        print(f"({i},{j})", end=" ")
+    print()
+输出：
+plaintext
+(1,1) (1,2) (1,3) 
+(2,1) (2,2) (2,3) 
+(4,1) (4,2) (4,3) 
+(5,1) (5,2) (5,3) 
+解析：i=3时外层continue，j=4时内层break。
+
+题 15 答案：
+attempts = 0
+while attempts < 3:
+    password = input(f"请输入密码（第{attempts+1}次）：")
+    if password == "123456":
+        print("验证通过")
+        break
+    attempts += 1
+else:
+    print("验证失败")  # 3次都错则执行
+解析：while循环控制次数，猜对则break，否则循环结束后执行else。
+
+
+题 16 答案：
+found = False
+row = 1
+while row <= 4 and not found:
+    col = 1
+    while col <= 4 and not found:
+        if row + col == 5:
+            print(f"找到：行{row}列{col}")  # 输出：找到：行1列4（第一个满足条件的）
+            found = True  # 标记找到，终止所有循环
+        col += 1
+    row += 1
+解析：用found标志位控制，找到后通过break逻辑终止嵌套循环。
+
+题 17 答案：
+result = "无"
+for num in range(10, 101):
+    if num % 2 != 0:
+        continue  # 不是偶数则跳过
+    tens = num // 10  # 十位数字
+    units = num % 10  # 个位数字
+    if tens > units and num % 7 == 0:
+        result = num
+        break
+print(result)  # 输出：70（7>0，70是偶数且能被7整除）
+解析：多条件筛选，找到后break。
+
+题 18 答案：
+attempts = 0
+while attempts < 3:
+    s = input(f"请输入字符串（第{attempts+1}次）：")
+    if s == "exit":
+        break  # 终止所有循环
+    has_digit = False
+    for char in s:
+        if char.isdigit():
+            has_digit = True
+            break
+    if has_digit:
+        attempts += 1
+        continue  # 包含数字则跳过
+    print(f"字符串长度：{len(s)}")
+    attempts += 1
+解析：外层while控制次数，内层for判断是否有数字，符合条件则continue外层循环。
+
+题 19 答案：
+import random
+
+secret = random.randint(1, 20)
+attempts = 0
+while attempts < 5:
+    try:
+        guess = int(input(f"请猜1~20的数字（第{attempts+1}次）："))
+    except ValueError:
+        print("请输入数字")
+        continue  # 输入非整数则跳过
+    attempts += 1
+    if guess > secret:
+        print("太大了")
+    elif guess < secret:
+        print("太小了")
+    else:
+        print("恭喜猜对！")
+        break
+else:
+    print(f"次数用完，答案是{secret}")

@@ -1,0 +1,68 @@
+# 数据容器、list列表的定义与常用操作
+# 基本语法
+# 字面量的定义
+[1,'zs',True,13.14]
+# 定义变量
+my_list = [1,'zs',True,13.14]
+print(my_list)
+# 定义空列表
+my_list1 = []
+my_list2 = list()
+print(my_list2)
+
+# 小作业需求：1.定义列表1内容包含姓名 性别  2.定义列表2内容包含电话号码
+            # 3.定义列表3内容包含列表1和列表2  打印并输出list3
+my_list1 = ['zs','男']
+my_list2 = [123456]
+my_list3 = [my_list1,my_list2]
+print(my_list3)
+
+# 下标索引
+my_list = [1,2,3,4,5,6]
+print(my_list[2])  # 正向索引 取出下标为2的元素   输出：3
+print(my_list[-4])  # 反向索引 取出下标为 -4的元素   输出：3
+# print(my_list[7])   # 在下标索引时不能超出列表范围，否则报错
+my_list = [[1,2,3],[4,5,6]]
+print(my_list[0][1])
+print(my_list[-1][2])
+
+# 修改制定位置元素的值
+my_list = [1,2,3]
+my_list[2] = 'zs'
+print(my_list)
+
+# 查找元素下标值 index
+my_list = [1,2,3]
+index = my_list.index(3)
+print(index,type(index))
+my_list = [[1,2,3],[4,5,6]]
+index = my_list[0].index(3)
+print(index,type(index))
+
+# 插入元素 insert
+my_list = [1,2,3]
+my_list.insert(0,'zs')
+print(my_list)
+
+# 追加元素
+my_list = [1,2,3]
+my_list.append(4)
+print(my_list)
+# 追加多个元素
+my_list = [1,2,3]
+my_list.extend([4,5,6])
+print(my_list)
+
+# 删除元素
+my_list = [1,2,3]
+del my_list[1]
+print(my_list)
+my_list = [1,2,3]
+num = my_list.pop(1)  # 取出列表中指定位置的元素，完成删除 并将取出的值赋值给变量num
+print(my_list)
+print(num)
+my_list = [1,2,3,2,4,2,5]
+my_list.remove(2)  # 删除指定元素在列表中 第一个匹配项
+print(my_list)
+my_list.clear()  # 清空列表中的所有元素
+print(my_list)

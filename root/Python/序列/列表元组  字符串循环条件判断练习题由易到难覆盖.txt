@@ -1,0 +1,249 @@
+练习题 1：基础综合 - 字符串统计与列表筛选
+要求：
+定义字符串 s = "Python is a powerful programming language"
+用 for 循环统计字符串中字母 "p"（不区分大小写）出现的次数
+将字符串按空格分割为列表 words（使用 split() 方法）
+用 for 循环 + if 判断，筛选出列表中长度大于 5 的单词，存入新列表 long_words
+打印统计的 "p" 出现次数，以及 long_words 列表。
+
+练习题 2：元组与列表转换 - while 循环处理数据
+要求：
+定义元组 nums_tuple = (1, 3, 5, 7, 8, 10, 12)
+将元组转换为列表 nums_list
+用 while 循环遍历 nums_list，将所有偶数替换为该数的一半（保留整数）
+用 for 循环 + if 判断，筛选出 nums_list 中大于 5 的元素，组成新元组 new_tuple
+打印修改后的 nums_list 和 new_tuple。
+
+练习题 3：字符串加密 - 列表拼接与条件判断
+要求：
+定义字符串 text = "HelloWorld2025"
+用 for 循环遍历字符串每个字符，按规则加密：
+字母：大写转小写，小写转大写
+数字：加 1（如 0→1，9→0）
+其他字符：保持不变
+加密后的字符存入列表 encrypt_chars
+将 encrypt_chars 列表拼接为加密字符串 encrypt_str（使用 join()）
+用 if 判断：若加密字符串长度 > 10 且包含字符 "9"，打印 “加密成功”，否则打印 “加密失败”
+打印加密后的字符串和判断结果。
+
+练习题 4：函数封装 - 混合数据清洗（列表 + 元组 + 字符串 + while 循环）
+要求：
+定义函数 clean_data(data)，接收混合数据列表（示例：data = ["apple", 25, ("banana", 30), "orange", 18, ("grape", 22)]）
+函数内完成以下操作：
+a. 用 while 循环删除列表中所有数字类型的元素
+b. 用 for 循环处理剩余元素：
+字符串：转为大写
+元组：第一个元素转大写，第二个元素加 5，生成新元组
+c. 生成处理后的新列表 cleaned_list
+d. 遍历 cleaned_list，计算所有元组第二个元素的总和（用 if 判断元素类型）
+调用函数，传入示例 data，打印处理后的列表和总和。
+
+练习题 5：综合应用 - 学生信息管理（列表 + 元组 + 字符串 + 多循环 / 条件）
+要求：
+定义函数 manage_students(students)，接收学生信息列表（每个元素是元组：(学号, 姓名, 成绩)），示例：
+students = [(101, "张三", 85), (102, "李四", 58), (103, "王五", 92), (104, "赵六", 76)]
+函数内完成：
+a. 用 for 循环遍历，按格式打印每个学生信息（如：学号：101，姓名：张三，成绩：85）
+b. 统计及格（≥60）和不及格学生人数（用 if 判断）
+c. 用 while 循环处理列表：将不及格学生的成绩改为 “补考”（元组不可变，需转列表修改后转回元组）
+d. 将处理后的列表按 “成绩” 降序排序（“补考” 排最后）
+e. 提取所有学生姓名，拼接为字符串："姓名：张三, 李四, 王五, 赵六"（用 join()）
+调用函数，传入示例 students，打印处理后的学生列表、及格 / 不及格人数、姓名字符串。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+答案
+练习题 1 答案
+
+
+# 1. 定义字符串
+s = "Python is a powerful programming language"
+# 2. 统计"p"（不区分大小写）的次数
+p_count = 0
+for char in s:
+    if char.lower() == "p":  # 统一转为小写判断
+        p_count += 1
+# 3. 按空格分割为列表
+words = s.split()
+# 4. 筛选长度大于5的单词
+long_words = []
+for word in words:
+    if len(word) > 5:
+        long_words.append(word)
+# 5. 打印结果
+print(f"字母'p'（不区分大小写）出现次数：{p_count}")
+print(f"长度大于5的单词列表：{long_words}")
+
+# 输出：
+# 字母'p'（不区分大小写）出现次数：3
+# 长度大于5的单词列表：['powerful', 'programming', 'language']
+
+练习题 2 答案
+
+# 1. 定义元组
+nums_tuple = (1, 3, 5, 7, 8, 10, 12)
+# 2. 转换为列表
+nums_list = list(nums_tuple)
+# 3. while循环替换偶数为一半（整数）
+i = 0
+while i < len(nums_list):
+    if nums_list[i] % 2 == 0:
+        nums_list[i] = nums_list[i] // 2  # 整数除法
+    i += 1
+# 4. 筛选大于5的元素组成新元组
+new_tuple = tuple(num for num in nums_list if num > 5)  # 列表推导式+转元组
+# 5. 打印结果
+print(f"修改后的列表：{nums_list}")
+print(f"大于5的元素组成的元组：{new_tuple}")
+
+# 输出：
+# 修改后的列表：[1, 3, 5, 7, 4, 5, 6]
+# 大于5的元素组成的元组：(7, 6)
+
+
+练习题 3 答案
+
+# 1. 定义字符串
+text = "HelloWorld2025"
+# 2. 加密字符并存入列表
+encrypt_chars = []
+for char in text:
+    if char.isupper():  # 大写字母转小写
+        encrypt_chars.append(char.lower())
+    elif char.islower():  # 小写字母转大写
+        encrypt_chars.append(char.upper())
+    elif char.isdigit():  # 数字加1，9→0
+        new_digit = str((int(char) + 1) % 10)
+        encrypt_chars.append(new_digit)
+    else:  # 其他字符不变
+        encrypt_chars.append(char)
+# 3. 拼接为加密字符串
+encrypt_str = "".join(encrypt_chars)
+# 4. 条件判断
+if len(encrypt_str) > 10 and "9" in encrypt_str:
+    result = "加密成功"
+else:
+    result = "加密失败"
+# 5. 打印结果
+print(f"加密后的字符串：{encrypt_str}")
+print(f"判断结果：{result}")
+
+# 输出：
+# 加密后的字符串：hELLOwORLD3136
+# 判断结果：加密失败（因为不含"9"）
+
+练习题 4 答案
+
+def clean_data(data):
+    # a. while循环删除所有数字类型元素
+    i = 0
+    while i < len(data):
+        if type(data[i]) == int:  # 判断是否为整数
+            del data[i]  # 删除数字元素，索引不递增（列表长度减1）
+        else:
+            i += 1  # 非数字元素，索引递增
+    # b. 处理剩余元素（字符串/元组）
+    cleaned_list = []
+    for item in data:
+        if type(item) == str:
+            cleaned_list.append(item.upper())  # 字符串转大写
+        elif type(item) == tuple:
+            new_tup = (item[0].upper(), item[1] + 5)  # 元组处理
+            cleaned_list.append(new_tup)
+    # c. 计算元组第二个元素的总和
+    total = 0
+    for elem in cleaned_list:
+        if type(elem) == tuple:
+            total += elem[1]
+    # 返回结果
+    return cleaned_list, total
+
+# 调用函数
+data = ["apple", 25, ("banana", 30), "orange", 18, ("grape", 22)]
+cleaned_list, total = clean_data(data)
+print(f"处理后的列表：{cleaned_list}")
+print(f"元组第二个元素总和：{total}")
+
+# 输出：
+# 处理后的列表：['APPLE', ('BANANA', 35), 'ORANGE', ('GRAPE', 27)]
+# 元组第二个元素总和：62
+
+练习题 5 答案
+
+def manage_students(students):
+    # a. 打印每个学生信息
+    print("学生原始信息：")
+    for stu in students:
+        print(f"学号：{stu[0]}，姓名：{stu[1]}，成绩：{stu[2]}")
+    
+    # b. 统计及格/不及格人数
+    pass_count = 0
+    fail_count = 0
+    for stu in students:
+        if stu[2] >= 60:
+            pass_count += 1
+        else:
+            fail_count += 1
+    
+    # c. while循环将不及格成绩改为"补考"（元组转列表修改）
+    i = 0
+    while i < len(students):
+        stu = list(students[i])  # 元组转列表（可变）
+        if stu[2] < 60:
+            stu[2] = "补考"
+        students[i] = tuple(stu)  # 列表转回元组
+        i += 1
+    
+    # d. 按成绩降序排序（"补考"排最后）
+    def sort_key(item):
+        # 自定义排序键：成绩为数字则取数字，"补考"取-1
+        return item[2] if isinstance(item[2], int) else -1
+    students_sorted = sorted(students, key=sort_key, reverse=True)
+    
+    # e. 提取姓名并拼接字符串
+    names = [stu[1] for stu in students_sorted]  # 提取姓名列表
+    name_str = "姓名：" + ", ".join(names)
+    
+    # 返回结果
+    return students_sorted, pass_count, fail_count, name_str
+
+# 调用函数
+students = [(101, "张三", 85), (102, "李四", 58), (103, "王五", 92), (104, "赵六", 76)]
+sorted_students, pass_num, fail_num, name_str = manage_students(students)
+
+# 打印结果
+print("\n处理后的学生列表（降序）：", sorted_students)
+print(f"及格人数：{pass_num}，不及格人数：{fail_num}")
+print(f"姓名拼接字符串：{name_str}")
+
+# 输出：
+# 学生原始信息：
+# 学号：101，姓名：张三，成绩：85
+# 学号：102，姓名：李四，成绩：58
+# 学号：103，姓名：王五，成绩：92
+# 学号：104，姓名：赵六，成绩：76
+
+# 处理后的学生列表（降序）： [(103, '王五', 92), (101, '张三', 85), (104, '赵六', 76), (102, '李四', '补考')]
+# 及格人数：3，不及格人数：1
+# 姓名拼接字符串：姓名：王五, 张三, 赵六, 李四

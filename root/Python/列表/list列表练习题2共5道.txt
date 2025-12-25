@@ -1,0 +1,109 @@
+函数与列表遍历：定义一个函数 find_evens(nums)，接收一个整数列表 nums，返回列表中所有偶数组成的新列表（使用 for 循环和 append）。示例：若输入 [1,2,3,4,5,6]，返回 [2,4,6]。
+
+循环与计数：定义一个函数 count_element(lst, target)，接收列表 lst 和目标值 target，通过 for 循环和 if 判断统计 target 在列表中出现的次数（不允许直接使用 count 方法），返回次数。示例：若输入 ['a','b','a','c','a'] 和 'a'，返回 3。
+
+列表修改与循环：已知列表 tasks = ['学习', '运动', '休息']，编写程序完成：
+用 insert 在索引 1 处添加 '吃饭'
+用 for 循环遍历列表，打印每个元素（格式：第x项：内容）
+用 del 删除索引为 0 的元素，再用 pop 删除最后一个元素，输出最终列表。
+
+while 循环与元素移除：定义一个函数 remove_all(lst, value)，接收列表 lst 和值 value，使用 while 循环删除列表中所有等于 value 的元素（可结合 in 判断和 remove 方法），返回处理后的列表。示例：若输入 [1,2,2,3,2,4] 和 2，返回 [1,3,4]。
+
+综合应用：定义一个函数 process_scores(scores)，接收学生成绩列表（如 [85, 92, 58, 76, 90, 45]），完成：
+计算列表长度（len）并打印
+筛选出所有及格的成绩（≥60），用 append 存入新列表
+将新列表中所有成绩加 5 分（修改元素值）
+返回处理后的新列表。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+答案
+
+def find_evens(nums):
+    evens = []
+    for num in nums:
+        if num % 2 == 0:  # 判断偶数
+            evens.append(num)
+    return evens
+
+# 测试
+print(find_evens([1,2,3,4,5,6]))  # 输出：[2,4,6]
+
+
+
+
+def count_element(lst, target):
+    count = 0
+    for item in lst:
+        if item == target:  # 匹配目标值
+            count += 1
+    return count
+
+# 测试
+print(count_element(['a','b','a','c','a'], 'a'))  # 输出：3
+
+
+tasks = ['学习', '运动', '休息']
+# 插入元素
+tasks.insert(1, '吃饭')  # 此时列表：['学习', '吃饭', '运动', '休息']
+
+# 遍历打印
+for i in range(len(tasks)):
+    print(f"第{i+1}项：{tasks[i]}")  # 索引从0开始，序号+1
+
+# 删除元素
+del tasks[0]  # 删除索引0（'学习'），列表变为：['吃饭', '运动', '休息']
+tasks.pop()    # 删除最后一个元素（'休息'），列表变为：['吃饭', '运动']
+
+print("最终列表：", tasks)  # 输出：['吃饭', '运动']
+
+
+def remove_all(lst, value):
+    # 当列表中仍有目标值时循环删除
+    while value in lst:
+        lst.remove(value)  # 每次删除第一个匹配的元素
+    return lst
+
+# 测试
+print(remove_all([1,2,2,3,2,4], 2))  # 输出：[1,3,4]
+
+
+def process_scores(scores):
+    # 计算原列表长度
+    print("原成绩列表长度：", len(scores))
+    
+    # 筛选及格成绩
+    passed = []
+    for score in scores:
+        if score >= 60:
+            passed.append(score)
+    
+    # 及格成绩加5分
+    for i in range(len(passed)):
+        passed[i] += 5  # 修改元素值
+    
+    return passed
+
+# 测试
+result = process_scores([85, 92, 58, 76, 90, 45])
+print("处理后的及格成绩：", result)  
+# 输出：
+# 原成绩列表长度：6
+# 处理后的及格成绩：[90, 97, 81, 95]

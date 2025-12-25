@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时间纪念日计数器</title>
+    <style>
+        :root {
+            --primary-color: #ff4500;
+            --secondary-color: #4a6baf;
+            --text-color: #333;
+            --bg-color: #f0f0f0;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            --holiday-color: #e74c3c;
+            --season-color: #2ecc71;
+            --memorial-color: #9b59b6;
+            --custom-event-color: #3498db;
+        }
+
+        body {
+            font-family: 'Arial', 'Microsoft YaHei', sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            width: 100%;
+        }
+
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 100px;
+            color: rgba(0, 0, 0, 0.05);
+            pointer-events: none;
+            z-index: -1;
+            user-select: none;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
+
+        h2, h3 {
+            font-size: 1.8em;
+            margin: 25px 0 15px;
+            color: var(--secondary-color);
+        }
+
+        h3 {
+            font-size: 1.5em;
+            margin: 20px 0 10px;
+        }
+
+        .card {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        #current-time {
+            font-size: 1.5em;
+            margin: 15px 0;
+            padding: 12px;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .days-counter {
+            font-size: 2.8em;
+            margin: 10px 0;
+            color: var(--primary-color);
+            font-weight: bold;
+            transition: all 0.5s ease;
+        }
+
+        .gradient-animated {
+            background: linear-gradient(90deg, 
+                #ff0000, #ff7f00, #ffff00, #00ff00, 
+                #0000ff, #4b0082, #9400d3, #ff0000);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+            animation: gradientMove 20s linear infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% center; }
+            100% { background-position: -200% center; }
+        }
+
+        .date-input-container {
+            margin: 20px 0;
+        }
+
+        .form-input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Microsoft YaHei', sans-serif;
+            margin: 5px 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .form-button {
+            padding: 10px 15px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        .form-button:hover {
+            background-color: #3a5a9a;
+        }
+
+        .holiday-container, .custom-events-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .holiday-section {
+            margin-bottom: 30px;
+        }
+
+        .holiday-section h4 {
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 8px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .holiday-item, .custom-event-item {
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .holiday-item:hover, .custom-event-item:hover {
+            transform: scale(1.02);
+        }
+
+        .holiday-name, .event-name {
+            font-weight: bold;
+            font-size: 1.1em;
+            flex: 1;
+        }
+
+        .holiday-date, .event-date {
+            color: #666;
+            width: 100px;
+            text-align: right;
+        }
+
+        .days-remaining, .event-days {
+            font-weight: bold;
+            font-size: 1.2em;
+            width: 100px;
+            text-align: right;
+        }
+
+        .holiday-type-1 { /* 节日 */
+            border-left: 4px solid var(--holiday-color);
+        }
+        .holiday-type-2 { /* 节气 */
+            border-left: 4px solid var(--season-color);
+        }
+        .holiday-type-3 { /* 纪念日 */
+            border-left: 4px solid var(--memorial-color);
+        }
+        .custom-event-item { /* 自定义事件 */
+            border-left: 4px solid var(--custom-event-color);
+        }
+
+        .event-details {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+            width: 100%;
+            display: none;
+        }
+
+        .show-details {
+            display: block;
+        }
+
+        .delete-event {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: none;
+            border: none;
+            color: #e74c3c;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-size: 0.9em;
+            color: #666;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            width: 100%;
+        }
+
+        .filter-controls {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 20px;
+            background-color: #eee;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .custom-event-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 600px) {
+            .holiday-container, .custom-events-container {
+                grid-template-columns: 1fr;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            .days-counter {
+                font-size: 2.2em;
+            }
+            .holiday-item, .custom-event-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .holiday-date, .days-remaining, .event-date, .event-days {
+                width: auto;
+                text-align: left;
+                margin-top: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="watermark">时光记忆</div>
+    <div class="container">
+        <h1 class="gradient-animated">时间纪念日计数器</h1>
+        
+        <div class="card">
+            <div id="current-time">当前时间: --:--:--</div>
+            
+            <div class="gradient-animated">从出生到现在已经过去了</div>
+            <div class="days-counter" id="dsr">0</div>
+            <div>天</div>
+        </div>
+
+        <div class="date-input-container">
+            <label for="birthday-input">设置您的生日: </label>
+            <input type="date" id="birthday-input" class="form-input" value="2007-05-01" lang="zh-CN">
+        </div>
+
+        <div class="card">
+            <div class="gradient-animated">距离下次生日还有</div>
+            <div class="days-counter" id="birthday-countdown">0</div>
+            <div>天</div>
+            <div id="next-birthday-age">这将是你<span id="next-age">0</span>岁生日</div>
+        </div>
+
+        <div class="card">
+            <h3>自定义倒计时</h3>
+            <div class="custom-event-form">
+                <input type="text" id="event-name" placeholder="事件名称" class="form-input" required>
+                <input type="date" id="event-date" class="form-input" required>
+                <textarea id="event-details" placeholder="事件详情（可选）" class="form-input" rows="3"></textarea>
+                <button id="add-event-btn" class="form-button">添加倒计时</button>
+            </div>
+            <div id="custom-events-list" class="custom-events-container">
+                <!-- 自定义事件将在这里动态生成 -->
+            </div>
+        </div>
+
+        <h2>节日倒计时</h2>
+        
+        <div class="filter-controls">
+            <button class="filter-btn active" data-filter="all">全部</button>
+            <button class="filter-btn" data-filter="type-1">传统节日</button>
+            <button class="filter-btn" data-filter="type-2">节气</button>
+            <button class="filter-btn" data-filter="type-3">纪念日</button>
+            <button class="filter-btn" data-filter="type-4">国际节日</button>
+        </div>
+        
+        <div class="holiday-container" id="holiday-container">
+            <!-- 节日列表将通过JavaScript动态生成 -->
+        </div>
+
+        <div class="footer">
+            页面每秒钟自动更新 · 数据实时计算 · © 2025 时光记忆
+        </div>
+    </div>
+
+    <script>
+        // 设置页面语言为中文
+        document.documentElement.lang = 'zh-CN';
+
+        // 获取DOM元素
+        const currentTimeElement = document.getElementById('current-time');
+        const daysSinceElement = document.getElementById('dsr');
+        const birthdayInput = document.getElementById('birthday-input');
+        const holidayContainer = document.getElementById('holiday-container');
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const birthdayCountdownElement = document.getElementById('birthday-countdown');
+        const nextAgeElement = document.getElementById('next-age');
+        const addEventBtn = document.getElementById('add-event-btn');
+        const customEventsList = document.getElementById('custom-events-list');
+        
+        // 设置默认生日日期
+        let memorialDate = new Date('2007-05-01T00:00:00');
+        let customEvents = [];
+        
+        // 完整的节日数据 (类型: 1=节日, 2=节气, 3=纪念日, 4=国际节日)
+        const holidays = [
+        { name: "小寒", date: "01-05", type: 2, videoUrl: "https://baike.baidu.com/item/小寒/1055" },
+        { name: "大寒", date: "01-20", type: 2, videoUrl: "https://baike.baidu.com/item/大寒/1056" },
+        { name: "立春", date: "02-03", type: 2, videoUrl: "https://baike.baidu.com/item/立春/1057" },
+        { name: "雨水", date: "02-18", type: 2, videoUrl: "https://baike.baidu.com/item/雨水/1058" },
+        { name: "惊蛰", date: "03-05", type: 2, videoUrl: "https://baike.baidu.com/item/惊蛰/1059" },
+        { name: "春分", date: "03-20", type: 2, videoUrl: "https://baike.baidu.com/item/春分/1060" },
+        { name: "清明", date: "04-04", type: 2, videoUrl: "https://baike.baidu.com/item/清明/1061" },
+        { name: "谷雨", date: "04-20", type: 2, videoUrl: "https://baike.baidu.com/item/谷雨/1062" },
+        { name: "立夏", date: "05-05", type: 2, videoUrl: "https://baike.baidu.com/item/立夏/1063" },
+        { name: "小满", date: "05-21", type: 2, videoUrl: "https://baike.baidu.com/item/小满/1064" },
+        { name: "芒种", date: "06-05", type: 2, videoUrl: "https://baike.baidu.com/item/芒种/1065" },
+        { name: "夏至", date: "06-21", type: 2, videoUrl: "https://baike.baidu.com/item/夏至/1066" },
+        { name: "小暑", date: "07-07", type: 2, videoUrl: "https://baike.baidu.com/item/小暑/1067" },
+        { name: "大暑", date: "07-22", type: 2, videoUrl: "https://baike.baidu.com/item/大暑/1068" },
+        { name: "立秋", date: "08-07", type: 2, videoUrl: "https://baike.baidu.com/item/立秋/1069" },
+        { name: "处暑", date: "08-23", type: 2, videoUrl: "https://baike.baidu.com/item/处暑/1070" },
+        { name: "白露", date: "09-07", type: 2, videoUrl: "https://baike.baidu.com/item/白露/1071" },
+        { name: "秋分", date: "09-22", type: 2, videoUrl: "https://baike.baidu.com/item/秋分/1072" },
+        { name: "寒露", date: "10-08", type: 2, videoUrl: "https://baike.baidu.com/item/寒露/1073" },
+        { name: "霜降", date: "10-23", type: 2, videoUrl: "https://baike.baidu.com/item/霜降/1074" },
+        { name: "立冬", date: "11-07", type: 2, videoUrl: "https://baike.baidu.com/item/立冬/1075" },
+        { name: "小雪", date: "11-22", type: 2, videoUrl: "https://baike.baidu.com/item/小雪/1076" },
+        { name: "大雪", date: "12-07", type: 2, videoUrl: "https://baike.baidu.com/item/大雪/1077" },
+        { name: "冬至", date: "12-21", type: 2, videoUrl: "https://baike.baidu.com/item/冬至/1078" },
+        
+        // 传统节日
+        { name: "春节", date: "01-29", type: 1 },
+        { name: "元宵节", date: "02-12", type: 1 },
+        { name: "龙抬头", date: "03-01", type: 1 },
+        { name: "清明节", date: "04-04", type: 1 },
+        { name: "端午节", date: "05-31", type: 1 },
+        { name: "七夕节", date: "08-02", type: 1 },
+        { name: "中元节", date: "2025-08-12", type: 1 },
+        { name: "中秋节", date: "2025-09-06", type: 1 },
+        { name: "重阳节", date: "2025-10-29", type: 1 },
+        { name: "腊八节", date: "2025-12-27", type: 1 },
+        { name: "小年", date: "2026-01-17", type: 1 },
+        
+        // 纪念日
+        { name: "周恩来逝世纪念日", date: "01-08", type: 3 },
+        { name: "南京大屠杀纪念日", date: "12-13", type: 3 },
+        { name: "毛泽东逝世纪念日", date: "09-09", type: 3 },
+        { name: "九·一八事变纪念日", date: "2025-09-18", type: 3 },
+        { name: "抗日战争胜利纪念日", date: "09-03", type: 3 },
+        { name: "南京大屠杀纪念日", date: "2025-12-13", type: 3 },
+        { name: "澳门回归纪念日", date: "2025-12-20", type: 3 },
+        { name: "五四青年节", date: "2025-05-04", type: 3 },
+        { name: "建党节", date: "2025-07-01", type: 3 },
+        { name: "建军节", date: "2025-08-01", type: 3 },
+        { name: "国庆节", date: "2025-10-01", type: 3 },
+        { name: "香港回归纪念日", date: "2025-07-01", type: 3 },
+        
+        // 国际节日
+        { name: "元旦", date: "2025-01-01", type: 4 },
+        { name: "情人节", date: "2025-02-14", type: 4 },
+        { name: "妇女节", date: "2025-03-08", type: 4 },
+        { name: "愚人节", date: "2025-04-01", type: 4 },
+        { name: "劳动节", date: "2025-05-01", type: 4 },
+        { name: "母亲节", date: "2025-05-11", type: 4 },
+        { name: "父亲节", date: "2025-06-15", type: 4 },
+        { name: "万圣节", date: "2025-10-31", type: 4 },
+        { name: "感恩节", date: "2025-11-27", type: 4 },
+        { name: "圣诞节", date: "2025-12-25", type: 4 },
+        
+        // ==== 2026年节日 ====
+        // 节气
+        { name: "小寒", date: "2026-01-05", type: 2, videoUrl: "https://baike.baidu.com/item/小寒/1055" },
+        { name: "大寒", date: "2026-01-20", type: 2, videoUrl: "https://baike.baidu.com/item/大寒/1056" },
+        { name: "立春", date: "2026-02-04", type: 2, videoUrl: "https://baike.baidu.com/item/立春/1057" },
+        { name: "雨水", date: "2026-02-18", type: 2, videoUrl: "https://baike.baidu.com/item/雨水/1058" },
+        { name: "惊蛰", date: "2026-03-05", type: 2, videoUrl: "https://baike.baidu.com/item/惊蛰/1059" },
+        { name: "春分", date: "2026-03-20", type: 2, videoUrl: "https://baike.baidu.com/item/春分/1060" },
+        { name: "清明", date: "2026-04-04", type: 2, videoUrl: "https://baike.baidu.com/item/清明/1061" },
+        { name: "谷雨", date: "2026-04-20", type: 2, videoUrl: "https://baike.baidu.com/item/谷雨/1062" },
+        { name: "立夏", date: "2026-05-05", type: 2, videoUrl: "https://baike.baidu.com/item/立夏/1063" },
+        { name: "小满", date: "2026-05-21", type: 2, videoUrl: "https://baike.baidu.com/item/小满/1064" },
+        { name: "芒种", date: "2026-06-05", type: 2, videoUrl: "https://baike.baidu.com/item/芒种/1065" },
+        { name: "夏至", date: "2026-06-21", type: 2, videoUrl: "https://baike.baidu.com/item/夏至/1066" },
+        { name: "小暑", date: "2026-07-07", type: 2, videoUrl: "https://baike.baidu.com/item/小暑/1067" },
+        { name: "大暑", date: "2026-07-22", type: 2, videoUrl: "https://baike.baidu.com/item/大暑/1068" },
+        { name: "立秋", date: "2026-08-07", type: 2, videoUrl: "https://baike.baidu.com/item/立秋/1069" },
+        { name: "处暑", date: "2026-08-23", type: 2, videoUrl: "https://baike.baidu.com/item/处暑/1070" },
+        { name: "白露", date: "2026-09-07", type: 2, videoUrl: "https://baike.baidu.com/item/白露/1071" },
+        { name: "秋分", date: "2026-09-23", type: 2, videoUrl: "https://baike.baidu.com/item/秋分/1072" },
+        { name: "寒露", date: "2026-10-08", type: 2, videoUrl: "https://baike.baidu.com/item/寒露/1073" },
+        { name: "霜降", date: "2026-10-23", type: 2, videoUrl: "https://baike.baidu.com/item/霜降/1074" },
+        { name: "立冬", date: "2026-11-07", type: 2, videoUrl: "https://baike.baidu.com/item/立冬/1075" },
+        { name: "小雪", date: "2026-11-22", type: 2, videoUrl: "https://baike.baidu.com/item/小雪/1076" },
+        { name: "大雪", date: "2026-12-07", type: 2, videoUrl: "https://baike.baidu.com/item/大雪/1077" },
+        { name: "冬至", date: "2026-12-21", type: 2, videoUrl: "https://baike.baidu.com/item/冬至/1078" },
+        
+        // 传统节日
+        { name: "春节", date: "2026-02-17", type: 1 },
+        { name: "元宵节", date: "2026-03-03", type: 1 },
+        { name: "龙抬头", date: "2026-03-20", type: 1 },
+        { name: "清明节", date: "2026-04-04", type: 1 },
+        { name: "端午节", date: "2026-05-20", type: 1 },
+        { name: "七夕节", date: "2026-08-21", type: 1 },
+        { name: "中元节", date: "2026-09-01", type: 1 },
+        { name: "中秋节", date: "2026-09-25", type: 1 },
+        { name: "重阳节", date: "2026-10-18", type: 1 },
+        { name: "腊八节", date: "2026-12-16", type: 1 },
+        { name: "小年", date: "2027-01-05", type: 1 },
+        
+        // 纪念日
+        { name: "周恩来逝世纪念日", date: "2026-01-08", type: 3 },
+        { name: "南京大屠杀纪念日", date: "2026-12-13", type: 3 },
+        { name: "毛泽东逝世纪念日", date: "2026-09-09", type: 3 },
+        { name: "九·一八事变纪念日", date: "2026-09-18", type: 3 },
+        { name: "抗日战争胜利纪念日", date: "2026-09-03", type: 3 },
+        { name: "南京大屠杀纪念日", date: "2026-12-13", type: 3 },
+        { name: "澳门回归纪念日", date: "2026-12-20", type: 3 },
+        { name: "五四青年节", date: "2026-05-04", type: 3 },
+        { name: "建党节", date: "2026-07-01", type: 3 },
+        { name: "建军节", date: "2026-08-01", type: 3 },
+        { name: "国庆节", date: "2026-10-01", type: 3 },
+        { name: "香港回归纪念日", date: "2026-07-01", type: 3 },
+        
+        // 国际节日
+        { name: "元旦", date: "2026-01-01", type: 4 },
+        { name: "情人节", date: "2026-02-14", type: 4 },
+        { name: "妇女节", date: "2026-03-08", type: 4 },
+        { name: "愚人节", date: "2026-04-01", type: 4 },
+        { name: "劳动节", date: "2026-05-01", type: 4 },
+        { name: "母亲节", date: "2026-05-10", type: 4 },
+        { name: "父亲节", date: "2026-06-21", type: 4 },
+        { name: "万圣节", date: "2026-10-31", type: 4 },
+        { name: "感恩节", date: "2026-11-26", type: 4 },
+        { name: "圣诞节", date: "2026-12-25", type: 4 }
+
+
+
+
+
+          ];
+
+        // 初始化函数
+        function init() {
+            // 尝试从本地存储读取数据
+            const savedBirthday = localStorage.getItem('birthday');
+            const savedEvents = localStorage.getItem('customEvents');
+            
+            if (savedBirthday) {
+                birthdayInput.value = savedBirthday;
+                memorialDate = new Date(savedBirthday + 'T00:00:00');
+            }
+            
+            if (savedEvents) {
+                customEvents = JSON.parse(savedEvents);
+                renderCustomEvents();
+            }
+            
+            setChineseDateInput();
+            updateTime();
+        }
+
+        // 确保日期选择器显示中文
+        function setChineseDateInput() {
+            if (navigator.language.includes('zh-CN				')) {
+                birthdayInput.valueAsDate = memorialDate;
+            }
+        }
+
+        // 生日输入变化事件
+        birthdayInput.addEventListener('change', function() {
+            const newDate = new Date(this.value + 'T00:00:00');
+            if (!isNaN(newDate.getTime())) {
+                memorialDate = newDate;
+                updateTime();
+                localStorage.setItem('birthday', this.value);
+            }
+        });
+
+        // 添加自定义事件
+        addEventBtn.addEventListener('click', function() {
+            const eventName = document.getElementById('event-name').value.trim();
+            const eventDate = document.getElementById('event-date').value;
+            const eventDetails = document.getElementById('event-details').value.trim();
+            
+            if (!eventName || !eventDate) {
+                alert('请填写事件名称和日期');
+                return;
+            }
+            
+            const newEvent = {
+                id: Date.now(),
+                name: eventName,
+                date: eventDate,
+                details: eventDetails
+            };
+            
+            customEvents.push(newEvent);
+            saveCustomEvents();
+            renderCustomEvents();
+            
+            // 清空表单
+            document.getElementById('event-name').value = '';
+            document.getElementById('event-date').value = '';
+            document.getElementById('event-details').value = '';
+        });
+
+        // 保存自定义事件到本地存储
+        function saveCustomEvents() {
+            localStorage.setItem('customEvents', JSON.stringify(customEvents));
+        }
+
+        // 渲染自定义事件
+        function renderCustomEvents() {
+            customEventsList.innerHTML = '';
+            
+            if (customEvents.length === 0) {
+                customEventsList.innerHTML = '<p>暂无自定义事件</p>';
+                return;
+            }
+            
+            // 按日期排序
+            customEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            // 按月份分组
+            const eventsByMonth = {};
+            const now = new Date();
+            
+            customEvents.forEach(event => {
+                const eventDate = new Date(event.date);
+                const month = eventDate.getMonth() + 1;
+                
+                if (!eventsByMonth[month]) {
+                    eventsByMonth[month] = [];
+                }
+                
+                eventsByMonth[month].push(event);
+            });
+            
+            // 渲染事件列表
+            Object.keys(eventsByMonth).sort().forEach(month => {
+                const monthEvents = eventsByMonth[month];
+                const monthName = new Date(2025, month-1, 1).toLocaleDateString('zh-CN', {month: 'long'});
+                
+                const section = document.createElement('div');
+                section.className = 'holiday-section';
+                section.innerHTML = `<h4>${monthName}</h4>`;
+                
+                monthEvents.forEach(event => {
+                    const eventDate = new Date(event.date);
+                    const daysRemaining = getDaysBetweenDates(now, eventDate);
+                    const dateStr = eventDate.toLocaleDateString('zh-CN', {month: 'long', day: 'numeric'});
+                    
+                    const item = document.createElement('div');
+                    item.className = 'custom-event-item';
+                    item.innerHTML = `
+                        <button class="delete-event" data-id="${event.id}">×</button>
+                        <div class="event-name">${event.name}</div>
+                        <div class="event-date">${dateStr}</div>
+                        <div class="event-days">${daysRemaining >= 0 ? daysRemaining + '天后' : '已过' + Math.abs(daysRemaining) + '天'}</div>
+                        ${event.details ? `<div class="event-details">${event.details}</div>` : ''}
+                    `;
+                    
+                    section.appendChild(item);
+                });
+                
+                customEventsList.appendChild(section);
+            });
+        }
+
+        // 删除自定义事件
+        customEventsList.addEventListener('click', function(e) {
+            if (e.target.classList.contains('delete-event')) {
+                const eventId = parseInt(e.target.getAttribute('data-id'));
+                customEvents = customEvents.filter(event => event.id !== eventId);
+                saveCustomEvents();
+                renderCustomEvents();
+            }
+        });
+
+        // 筛选按钮点击事件
+        filterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                updateHolidays();
+            });
+        });
+        
+        // 计算两个日期之间的天数差
+        function getDaysBetweenDates(date1, date2) {
+            const diffTime = date2 - date1;
+            return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        }
+        
+        // 获取下一个生日日期
+        function getNextBirthday(birthDate) {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            
+            // 今年的生日
+            let nextBirthday = new Date(currentYear, birthDate.getMonth(), birthDate.getDate());
+            
+            // 如果今年生日已过，计算明年的生日
+            if (nextBirthday < now) {
+                nextBirthday = new Date(currentYear + 1, birthDate.getMonth(), birthDate.getDate());
+            }
+            
+            return nextBirthday;
+        }
+        
+        // 更新节日倒计时
+        function updateHolidays() {
+            const now = new Date();
+            const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+            
+            // 按月份分组
+            const holidaysByMonth = {};
+            holidays.forEach(holiday => {
+                const holidayDate = new Date(holiday.date);
+                const daysRemaining = getDaysBetweenDates(now, holidayDate);
+                
+                if (daysRemaining >= 0) {
+                    const month = holidayDate.getMonth() + 1;
+                    if (!holidaysByMonth[month]) {
+                        holidaysByMonth[month] = [];
+                    }
+                    
+                    // 检查筛选条件
+                    let shouldShow = false;
+                    switch(activeFilter) {
+                        case 'all': shouldShow = true; break;
+                        case 'type-1': shouldShow = holiday.type === 1; break;
+                        case 'type-2': shouldShow = holiday.type === 2; break;
+                        case 'type-3': shouldShow = holiday.type === 3; break;
+                        case 'type-4': shouldShow = holiday.type === 4; break;
+                    }
+                    
+                    if (shouldShow) {
+                        holidaysByMonth[month].push({
+                            ...holiday,
+                            daysRemaining,
+                            dateStr: holidayDate.toLocaleDateString('zh-CN', {month: 'long', day: 'numeric'})
+                        });
+                    }
+                }
+            });
+            
+            // 渲染节日列表
+            holidayContainer.innerHTML = '';
+            
+            // 按月份排序
+            const sortedMonths = Object.keys(holidaysByMonth).sort((a, b) => a - b);
+            
+            sortedMonths.forEach(month => {
+                const monthHolidays = holidaysByMonth[month];
+                if (monthHolidays.length > 0) {
+                    const monthName = new Date(2025, month-1, 1).toLocaleDateString('zh-CN', {month: 'long'});
+                    
+                    const section = document.createElement('div');
+                    section.className = 'holiday-section';
+                    section.innerHTML = `<h4>${monthName}</h4>`;
+                    
+                    // 按日期排序
+                    monthHolidays.sort((a, b) => new Date(a.date) - new Date(b.date));
+                    
+                    monthHolidays.forEach(holiday => {
+                        const item = document.createElement('div');
+                        item.className = `holiday-item holiday-type-${holiday.type}`;
+                        item.innerHTML = `
+                            <div class="holiday-name">${holiday.name}</div>
+                            <div class="holiday-date">${holiday.dateStr}</div>
+                            <div class="days-remaining">${holiday.daysRemaining}天后</div>
+                        `;
+                        section.appendChild(item);
+                    });
+                    
+                    holidayContainer.appendChild(section);
+                }
+            });
+        }
+        
+        // 更新当前时间和天数计算
+        function updateTime() {
+            const now = new Date();
+            
+            // 更新当前时间（中文格式）
+            currentTimeElement.textContent = '当前时间: ' + now.toLocaleTimeString('zh-CN', {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            
+            // 计算已活天数
+            const diffTime = now - memorialDate;
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            
+            // 更新生日倒计时
+            const nextBirthday = getNextBirthday(memorialDate);
+            const daysToBirthday = getDaysBetweenDates(now, nextBirthday);
+            const nextAge = now.getFullYear() - memorialDate.getFullYear() + (now < nextBirthday ? 0 : 1);
+            
+            // 添加平滑过渡效果
+            daysSinceElement.style.transform = 'scale(1.05)';
+            birthdayCountdownElement.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                daysSinceElement.style.transform = 'scale(1)';
+                birthdayCountdownElement.style.transform = 'scale(1)';
+            }, 200);
+            
+            // 更新DOM
+            daysSinceElement.textContent = diffDays.toLocaleString('zh-CN');
+            birthdayCountdownElement.textContent = daysToBirthday.toLocaleString('zh-CN');
+            nextAgeElement.textContent = nextAge;
+            
+            // 更新节日和自定义事件倒计时
+            updateHolidays();
+            renderCustomEvents();
+        }
+        
+        // 启动
+        init();
+        
+        // 每秒更新一次
+        setInterval(updateTime, 1000);
+    </script>
+</body>
+</html>     // 启动
+        init();
+        
+        // 每秒更新一次
+        setInterval(updateTime, 1000);
+    </script>
+</body>
+</html>

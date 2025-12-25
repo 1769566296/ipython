@@ -1,0 +1,6 @@
+amd = int(input("输入考试分数"))
+am = int(input("输入出勤次数"))
+if amd >= 60 and am >= 20:print("考试通过")
+elif amd >= 60 and am < 20: print("出勤不足，未通过")
+elif amd < 60 and am >= 20:print("分数不够，未通过")
+else:print("双重不达标，未通过")
